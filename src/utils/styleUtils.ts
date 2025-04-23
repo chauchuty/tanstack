@@ -1,0 +1,1 @@
+export type BulmaColor = 'primary' | 'link' | 'info' | 'success' | 'warning' | 'danger'

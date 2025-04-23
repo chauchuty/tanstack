@@ -7,16 +7,17 @@ import {
     updateUser,
     deleteUser,
 } from '../services/userService'
+import { User } from '../types/userType'
 
 export function useUsers() {
-    return useQuery({
+    return useQuery<User[], Error>({
         queryKey: ['users'],
         queryFn: getUsers,
     })
 }
 
 export function useUser(id: string) {
-    return useQuery({
+    return useQuery<User, Error>({
         queryKey: ['user', id],
         queryFn: () => getUser(id),
         enabled: !!id,

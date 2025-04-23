@@ -1,7 +1,8 @@
 import { api } from "../instance/api.instance"
+import { User } from "../types/userType"
 
 export const getUsers = async () => {
-  const res = await api.get('/users')
+  const res = await api.get<User[]>('/users')
   return res.data
 }
 
