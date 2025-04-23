@@ -1,60 +1,37 @@
-import { Button, Container, Flexbox, Text} from "@/components"
+import { Button, Container, Flexbox, Text } from "@/components"
 import { FormBuilder } from "@/components/FormBuilder"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({ component: Index })
 
 function Index() {
+    const formBuilder = FormBuilder()
     return (
         <Container fullWidth>
             <Flexbox>
                 <div></div>
                 <div className="p-2">
-                    <Text value='Contato' size={4} />
-                    <FormBuilder
-                        fields={[
-                            {
-                                name: "name",
+                    <Text value='Contato' size={4} isTitle />
+                    {
+                        formBuilder
+                            .addInput({
                                 label: "Nome",
-                                type: "text",
-                                value: "Cesar",
-                                placeholder: "Digite seu nome",
-                                required: true,
-                                validators: {
-                                    onChange: ({ value }) => {
-                                        if(!value) {
-                                            return "Nome é obrigatório"
-                                        }
-                                        if (value.length < 10) {
-                                            return "Nome muito curto"
-                                        }
-
-                                    },
-                                },
-                            },
-                            {
-                                name: "email",
+                                name: "name",
+                            })
+                            .addInput({
                                 label: "Email",
-                                type: "email",
-                                placeholder: "Digite seu email",
-                                required: true,
-                            },
-                        ]}
-                        buttons={[
-                            {
-                                label: "Enviar",
-                                type: "submit",
-                                color: "info",
-                                isFullWidth: true,
-                                onClick: () => {
-                                    console.log("Enviando")
-                                },
-                            },
-                        ]}
-                        onSubmit={(data) => {
-                            console.log(data)
-                        }}
-                    />
+                                name: "email"
+                            })
+                            .addInput({
+                                label: "Assunto",
+                                name: "subject"
+                            })
+                            .addTextarea({
+                                label: "Mensagem",
+                                name: "message"
+                            })
+                            .build()
+                    }
                 </div>
             </Flexbox>
         </Container>
