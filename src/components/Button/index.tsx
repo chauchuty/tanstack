@@ -21,9 +21,7 @@ export function Button(props: ButtonProps) {
             disabled={props.disabled}
             onClick={props.onClick}
             onSubmit={props.onSubmit}
-            className={`button is-${props.color} 
-            ${props.isFullWidth ? 'is-fullwidth' : ''}
-            `}
+            className={`button is-${props.color} is-fullwidth`}
         >
             {props.label || props.children}
         </button>

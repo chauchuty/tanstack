@@ -12,15 +12,17 @@ type InputProps = {
     placeholder?: HTMLInputElement['placeholder']
 } & Field
 
+type TextareaProps = {
+    placeholder?: HTMLTextAreaElement['placeholder']
+} & Field
+
 type ButtonProps = {
     type?: HTMLButtonElement['type']
 } & Field
 
 export function FormBuilder() {
     const form = useForm({
-        defaultValues: {
-            name: ''
-        },
+
         onSubmit: ({ value }) => {
             console.log(value)
         }
@@ -33,7 +35,7 @@ export function FormBuilder() {
             fields.push(
                 <form.Field
                     key={input.name}
-                    name="name"
+                    name={input.name}
                     children={(field) => (
                         <div className="field">
                             <label className="label">{input.label}</label>
@@ -54,11 +56,36 @@ export function FormBuilder() {
             )
             return this
         },
+        addTextarea(textarea: TextareaProps) {
+            fields.push(
+                <form.Field
+                    key={textarea.name}
+                    name={textarea.name}
+                    children={(field) => (
+                        <div className="field">
+                            <label className="label">{textarea.label}</label>
+                            <div className="control">
+                                <textarea
+                                    className="textarea"
+                                    placeholder={textarea.placeholder}
+                                    autoComplete="off"
+                                    rows={2}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                />
+                            </div>
+                            <FieldInfo field={field} />
+                        </div>
+
+                    )}
+                />
+            )
+            return this
+        },
         addButton(button: ButtonProps) {
             buttons.push(
-                <div key={button.name} className="control">
-                    <Button label={button.label} name={button.name} type={button.type} />
-                </div>
+                // <div key={button.name} className="control">
+                <Button key={button.name} label={button.label} name={button.name} type={button.type} isFullWidth />
+                // </div>
             )
             return this
         },
@@ -89,7 +116,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
             {field.state.meta.isTouched && field.state.meta.errors.length ? (
                 <em>{field.state.meta.errors.join(', ')}</em>
             ) : null}
-            {field.state.meta.isValidating ? 'Validating...' : 'Texto de ajuda'}
+            {field.state.meta.isValidating ? 'Validando...' : ''}
         </p>
     )
 }

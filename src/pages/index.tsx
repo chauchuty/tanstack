@@ -18,6 +18,14 @@ function Index() {
                                 label: 'Nome',
                                 name: 'name',
                             })
+                            .addInput({
+                                label: 'Email',
+                                name: 'email'
+                            })
+                            .addTextarea({
+                                label: 'Mensagem',
+                                name: 'message'
+                            })
                             .addButton({
                                 label: 'Enviar',
                                 name: 'submit'
