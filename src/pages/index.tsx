@@ -1,11 +1,11 @@
-import { Button, Container, Flexbox, Text } from "@/components"
-import { FormBuilder } from "@/components/FormBuilder"
+import { Container, Flexbox, FormBuilder, Text } from "@/components"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({ component: Index })
 
 function Index() {
     const formBuilder = FormBuilder()
+
     return (
         <Container fullWidth>
             <Flexbox>
@@ -15,20 +15,12 @@ function Index() {
                     {
                         formBuilder
                             .addInput({
-                                label: "Nome",
-                                name: "name",
+                                label: 'Nome',
+                                name: 'name',
                             })
-                            .addInput({
-                                label: "Email",
-                                name: "email"
-                            })
-                            .addInput({
-                                label: "Assunto",
-                                name: "subject"
-                            })
-                            .addTextarea({
-                                label: "Mensagem",
-                                name: "message"
+                            .addButton({
+                                label: 'Enviar',
+                                name: 'submit'
                             })
                             .build()
                     }

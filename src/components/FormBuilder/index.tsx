@@ -1,150 +1,95 @@
-import { AnyFieldApi, useForm } from '@tanstack/react-form';
-import { Button } from '../Button';
-import { JSX } from 'react';
+import { AnyFieldApi, useForm } from "@tanstack/react-form"
+import { JSX } from "react"
+import { Button } from "../Button"
 
 type Field = {
-  label: string;
-  name: string;
-  value?: string;
-  placeholder?: string;
-  required?: boolean;
-  validators?: {
-    onChange?: (value: any) => string | undefined;
-    onBlur?: (value: any) => string | undefined;
-    onChangeAsyncDebounceMs?: number;
-    onChangeAsync?: (value: any) => Promise<string | undefined>;
-  };
-};
+    label: string
+    name: string
+}
 
-type Input = {
-  type?: HTMLInputElement["type"]
-} & Field;
+type InputProps = {
+    type?: HTMLInputElement['type']
+    placeholder?: HTMLInputElement['placeholder']
+} & Field
 
-type Textarea = {} & Field
+type ButtonProps = {
+    type?: HTMLButtonElement['type']
+} & Field
 
-type FormBuilderReturn = {
-  addInput: (input: Input) => FormBuilderReturn;
-  addTextarea: (textarea: Textarea) => FormBuilderReturn
-  build: () => JSX.Element;
-};
+export function FormBuilder() {
+    const form = useForm({
+        defaultValues: {
+            name: ''
+        },
+        onSubmit: ({ value }) => {
+            console.log(value)
+        }
+    })
+    const fields: JSX.Element[] = []
+    const buttons: JSX.Element[] = []
 
-export function FormBuilder(): FormBuilderReturn {
-  const form = useForm();
-  const fields: JSX.Element[] = [];
-  const buttons: React.ComponentProps<typeof Button>[] = [];
-  let onSubmit: ((data: Record<string, any>) => void) | undefined;
+    return {
+        addInput(input: InputProps) {
+            fields.push(
+                <form.Field
+                    key={input.name}
+                    name="name"
+                    children={(field) => (
+                        <div className="field">
+                            <label className="label">{input.label}</label>
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type={input.type}
+                                    placeholder={input.placeholder}
+                                    autoComplete="off"
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                />
+                            </div>
+                            <FieldInfo field={field} />
+                        </div>
 
-  const addInput = (input: Input): FormBuilderReturn => {
-    fields.push(
-      <form.Field
-        key={input.name}
-        name={input.name}
-        validators={input.validators}
-      >
-        {(field) => (
-          <>
-            <label htmlFor={field.name} className="label">
-              {input.label}
-            </label>
-            <input
-              id={field.name}
-              name={field.name}
-              type={input.type}
-              autoComplete="off"
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              className={`input ${
-                field.state.meta.isTouched && field.state.meta.errors.length
-                  ? 'is-danger'
-                  : ''
-              }`}
-            />
-            <FieldInfo field={field} />
-          </>
-        )}
-      </form.Field>
-    );
-    return builder;
-  };
+                    )}
+                />
+            )
+            return this
+        },
+        addButton(button: ButtonProps) {
+            buttons.push(
+                <div key={button.name} className="control">
+                    <Button label={button.label} name={button.name} type={button.type} />
+                </div>
+            )
+            return this
+        },
+        build() {
+            return (
+                <form
+                    key={'form'}
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        form.handleSubmit()
+                    }}
+                >
+                    {fields}
+                    <div className="field is-grouped">
+                        {buttons}
+                    </div>
+                </form>
+            )
+        }
 
-  const addTextarea = (input: Field): FormBuilderReturn => {
-    fields.push(
-      <form.Field
-        key={input.name}
-        name={input.name}
-        validators={input.validators}
-      >
-        {(field) => (
-          <>
-            <label htmlFor={field.name} className="label">
-              {input.label}
-            </label>
-            <textarea
-              id={field.name}
-              name={field.name}
-              autoComplete="off"
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              className={`textarea ${
-                field.state.meta.isTouched && field.state.meta.errors.length
-                  ? 'is-danger'
-                  : ''
-              }`}
-              placeholder={input.placeholder}
-            />
-            <FieldInfo field={field} />
-          </>
-        )}
-      </form.Field>
-    );
-    return builder;
-  };
-
-  const build = (): JSX.Element => {
-    return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit({
-            // onSubmit: async ({ value }) => {
-            //   if (onSubmit) {
-            //     onSubmit(value);
-            //   }
-            // },
-          });
-        }}
-      >
-        <div>
-          {fields}
-          <div className="mt-4">
-            {buttons.map((button, idx) => (
-              <Button key={button.label || idx} {...button} />
-            ))}
-          </div>
-        </div>
-      </form>
-    );
-  };
-
-  const builder: FormBuilderReturn = {
-    addInput,
-    addTextarea,
-    build,
-  };
-
-  return builder;
+    }
 }
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <p className="help is-danger">
-          {field.state.meta.errors.join(', ')}
+    return (
+        <p className="help">
+            {field.state.meta.isTouched && field.state.meta.errors.length ? (
+                <em>{field.state.meta.errors.join(', ')}</em>
+            ) : null}
+            {field.state.meta.isValidating ? 'Validating...' : 'Texto de ajuda'}
         </p>
-      ) : null}
-      {field.state.meta.isValidating ? 'Validando...' : null}
-    </>
-  );
+    )
 }
